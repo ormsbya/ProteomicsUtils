@@ -35,7 +35,7 @@ def main(input_path, output_path, sample_name):
     else:
         fig_dict = {}
         figs = []
-        fig_dict = PlotUtils.pep_abund_hist(file)
+        fig_dict = PlotUtils.pep_abund_hist(input_path)
         figs.append(fig_dict)
         #save figs to pdf
         for fig_dict in figs:
