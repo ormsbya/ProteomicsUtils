@@ -9,7 +9,7 @@ from ProteomicsUtils.LoggerConfig import logger_config
 logger = logger_config(__name__)
 logger.info("Import Successful")
 
-def do_funcs(input_path, output_path, sample_name):
+def do_funcs():
     """
     Master function to apply a list of functions to the input file
 
@@ -28,9 +28,9 @@ def do_funcs(input_path, output_path, sample_name):
 
 ### add path check functionality to main function, then separate into do_funcs
 
-def do_funcs_folder(input_folder):
+def main(input_folder, output_path, sample_name):
+
     logger.info('Input Folder: {}'.format(input_folder))
-    output_path = input_folder+'/Results/'
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
     #find all files that contain Compiled in name
@@ -56,12 +56,11 @@ def do_funcs_folder(input_folder):
 
 
 if __name__ == "__main__":
-    pass
-
-input_folder = 'C:/Users/dezer_000/Desktop/Trial_data/'
-
-
-figures = do_funcs_folder(input_folder)
+    #default parameters if no command line arguements given
+    input_path = 'C:/Users/dezer_000/Desktop/Trial_data/'
+    output_path = 'C:/Users/dezer_000/Desktop/Trial_data/Results'
+    sample_name = 'Trial_data'
+    main(input_path, output_path, sample_name)
 
 
 ##Need to figure out how to save title of the figure with pdfpages
