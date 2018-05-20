@@ -6,6 +6,20 @@ from matplotlib.text import Annotation
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 import logging
+from bokeh.plotting import figure, show, output_file
+from bokeh.palettes import brewer
+from bokeh.models import (
+    ColumnDataSource,
+    HoverTool,
+    LinearColorMapper,
+    BasicTicker,
+    PrintfTickFormatter,
+    ColorBar,
+    glyphs,
+    Span
+)
+from bokeh.io import export_svgs
+from bokeh.layouts import gridplot
 from ProteomicsUtils.LoggerConfig import logger_config
 from ProteomicsUtils import FileHandling
 
