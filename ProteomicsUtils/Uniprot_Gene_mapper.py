@@ -1,5 +1,5 @@
 import urllib
-import re
+import re, os
 import pandas as pd
 from pandas.compat import StringIO
 #personal modules
@@ -20,7 +20,7 @@ def pass_and_retrieve(url, params):
     page = response.read(200000)
 
     decoded_data = StringIO(page.decode("utf-8"))
-    df = pd.read_csv(decoded_data, sep="//t|//n")
+    df = pd.read_csv(decoded_data, sep="//t|//n|\\t")
     return df
 
 
@@ -43,15 +43,14 @@ def gene_mapper(proteins):
 def main(input, output_path, col_name):
 
     #Checking input type: expects df or file path
-    if os.path.isfile(input):
-        logger.info(f"Collecting proteins from {input}...")
-        dataframe = pd.read_excel(input)
-    elif isinstance(input, pd.Dataframe):
+    if isinstance(input, pd.DataFrame):
         logger.info(f"Input detected as DataFrame.")
         dataframe = input
+    elif os.path.isfile(input):
+        logger.info(f"Collecting proteins from {input}...")
+        dataframe = pd.read_excel(input)
     else:
         logger.info(f"Incorrect input format detected. Please pass full file path, or a dataframe as input.")
-        break
 
     proteins = dataframe[col_name].tolist()
     logger.info(f"{len(proteins)} proteins collected from {col_name}")
