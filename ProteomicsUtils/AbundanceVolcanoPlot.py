@@ -19,7 +19,7 @@ sns.set()
 
 def main(input_path, output_path, sample_name, simple=True, interactive=True, Bokeh_plot=True):
 
-    logger.info(f"Analysing: {sample}")
+    logger.info(f"Analysing: {sample_name}")
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
 
@@ -108,7 +108,7 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
     # Gathering data for the scatter (volcano) plot
     xdata, xlabel = (protein_NormAR['Log2 Av AR'], 'Log2 Av. Abundance Ratio')
     ydata, ylabel = (protein_NormAR['Log10 p-val'], '-Log10 p-value')
-    title = sample
+    title = sample_name
     datalabels = protein_NormAR['Accession']
     colours = protein_NormAR['colours']
 
@@ -137,18 +137,18 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
 
     if Bokeh_plot:
         output = output_path+"_VolcanoPlot_Bokeh.html"
-        output_file(output, title=sample)
+        output_file(output, title=sample_name)
         logger.info(f"Output html will be saved to {output_path}")
 
         hovers = [('Protein', '@Accession'),
             ('Gene', '@Description'),]
 
-        fig3 = PlotUtils.bokeh_volcano_maker(df=protein_NormAR, c_col='Log10 p-val', y_col='Log10 p-val', x_col='Log2 Av AR', title=sample+' Volcano Plot', hover_list=hovers)
+        fig3 = PlotUtils.bokeh_volcano_maker(df=protein_NormAR, c_col='Log10 p-val', y_col='Log10 p-val', x_col='Log2 Av AR', title=sample_name+' Volcano Plot', hover_list=hovers)
         show(fig3)
 
     # Saving figures to pdf and as svg files
     logger.info(f"Volcano plots saved to {output_path}")
-    logger.info(f"Analysis complete for {sample}")
+    logger.info(f"Analysis complete for {sample_name}")
 
 
 if __name__ == "__main__":
