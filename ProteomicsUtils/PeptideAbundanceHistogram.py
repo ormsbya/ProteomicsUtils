@@ -33,13 +33,7 @@ def main(input_path, output_path, sample_name):
     if os.path.isdir(input_path):
         figures = multifile_hist(input_path, output_path, sample_name)
     else:
-        fig_dict = {}
-        figs = []
-        fig_dict = PlotUtils.pep_abund_hist(input_path)
-        figs.append(fig_dict)
-        #save figs to pdf
-        for fig_dict in figs:
-            figures.update(fig_dict)
+        figures = PlotUtils.pep_abund_hist(input_path)
         FileHandling.fig_to_pdf(figures, output_path, fig_type='PepAbundHist')
         logger.info(f"Figures saved to {output_path}")
 
