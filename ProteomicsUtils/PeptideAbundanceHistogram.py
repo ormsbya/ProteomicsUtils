@@ -26,13 +26,30 @@ def do_funcs():
     """
     pass
 
-### add path check functionality to main function, then separate into do_funcs
-
-def main(input_folder, output_path, sample_name):
-
-    logger.info('Input Folder: {}'.format(input_folder))
+def main(input_path, output_path, sample_name):
+    logger.info('Input path: {}'.format(input_path))
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
+    if os.path.isdir(input_path):
+        figures = multifile_hist(input_path, output_path, sample_name)
+    else:
+        fig_dict = {}
+        figs = []
+        fig_dict = PlotUtils.pep_abund_hist(file)
+        figs.append(fig_dict)
+        #save figs to pdf
+        for fig_dict in figs:
+            figures.update(fig_dict)
+        FileHandling.fig_to_pdf(figures, output_path, fig_type='PepAbundHist')
+        logger.info(f"Figures saved to {output_path}")
+
+    return figures
+
+
+def multifile_hist(input_folder, output_path, sample_name):
+
+    logger.info('Input Folder detected: {}'.format(input_folder))
+
     #find all files that contain Compiled in name
     compiled_files = glob.glob(input_folder+'/*Compiled.xlsx')
     #if there are no Compiled files, generate them
@@ -61,6 +78,8 @@ if __name__ == "__main__":
     output_path = 'C:/Users/dezer_000/Desktop/Trial_data/Results'
     sample_name = 'Trial_data'
     main(input_path, output_path, sample_name)
+
+##Figure out how to parse commandline arguements
 
 
 ##Need to figure out how to save title of the figure with pdfpages
