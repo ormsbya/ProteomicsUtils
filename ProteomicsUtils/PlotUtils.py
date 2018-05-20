@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 import logging
 from ProteomicsUtils.LoggerConfig import logger_config
-import ProteomicsUtils.FileHandling
+from ProteomicsUtils import FileHandling
 
 logger = logger_config(__name__)
 
