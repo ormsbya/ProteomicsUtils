@@ -100,7 +100,7 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
     # Collecting dataframes and descriptors to save using the df_to_excel function
     data_frames = [calcs, protein_AR_summary, protein_NormAR]
     sheetnames = ['Med+Mean Calcs', 'Protein AR', 'ProtAR Norm to Med']
-    output = output_path+'ProteinAbundance_Results.xlsx'
+    output = output_path+sample_name+'ProteinAbundance_Results.xlsx'
     FileHandling.df_to_excel(output, sheetnames, data_frames)
     logger.info(f"Dataframes saved to excel file at {output}...")
 
@@ -116,7 +116,7 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
     if simple:
         # for simple volcano plot, which is saved into the pdf
         fig1 = PlotUtils.simple_scatter(xdata,ydata,title, xlabel, ylabel, colours)
-        output = output_path+'Simple_Volcano_'
+        output = output_path+sample_name+'Simple_Volcano_'
         FileHandling.fig_to_pdf([fig1], output)
         FileHandling.fig_to_svg(['Simple_Volcano'],[fig1], output)
         plt.show(fig1)
@@ -130,13 +130,13 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
         logger.info("Interactive scatterplot done")
         # present the scatterplot
         #plt.show()
-        output = output_path+'Interactive_Volcano_'
+        output = output_path+sample_name+'Interactive_Volcano_'
         FileHandling.fig_to_pdf([fig2], output)
         FileHandling.fig_to_svg(['Interactive_Volcano'],[fig2], output)
 
 
     if Bokeh_plot:
-        output = output_path+"_VolcanoPlot_Bokeh.html"
+        output = output_path+sample_name+"_VolcanoPlot_Bokeh.html"
         output_file(output, title=sample_name)
         logger.info(f"Output html will be saved to {output_path}")
 
