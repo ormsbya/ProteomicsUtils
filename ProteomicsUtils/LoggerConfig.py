@@ -32,7 +32,7 @@ def logger_config(logger_name, logPath=False, file_log=True, print_log=True):
         return currentLogger
     else:
         if file_log:
-            fileHandler = logging.FileHandler("{0}/{1}.txt".format(logPath, fileName))
+            fileHandler = logging.FileHandler("{0}/{1}.log".format(logPath, fileName))
             fileHandler.setFormatter(logFormatter)
             currentLogger.addHandler(fileHandler)
         if print_log:
