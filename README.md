@@ -44,31 +44,31 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Module Dev Checklist
 
 #### Standard Utility Modules
-checked # [checkbox:checked] Plotting
+- [x] Plotting
 
-[checkbox:checked] Calculations
+- [x]  Calculations
 
-[checkbox:checked] DataWrangling
+- [x]  DataWrangling
 
-[checkbox:checked] FileHandling
+- [x]  FileHandling
 
-[checkbox:checked] StatUtils
+- [x] StatUtils
 
 
 #### Specific MS analysis Modules
 
-[checkbox:checked] Peptide abundance histogram
+- [x] Peptide abundance histogram
 
     PeptideAbundanceHistogram.main(input_path, output_path, sample_name)
 
-[checkbox:checked] Volcano plot of protein abundance changes
+- [x] Volcano plot of protein abundance changes
 
     AbundanceVolcanoPlot.main(input_path, output_path, sample_name)
 
-[checkbox:unchecked] Foldedness scatterplot from peptides
+- [ ]  Foldedness scatterplot from peptides
 
-[checkbox:unchecked] Heatmap of comparison between stress treatments
+- [ ] Heatmap of comparison between stress treatments
 
-[checkbox:unchecked] Cluster analysis according to GO thermofisher
+- [ ]  Cluster analysis according to GO thermofisher
 
-[checkbox:unchecked] Gene mapping functionality for UniProtKB accessions
+- [ ] Gene mapping functionality for UniProtKB accessions
