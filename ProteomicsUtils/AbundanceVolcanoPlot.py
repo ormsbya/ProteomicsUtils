@@ -20,6 +20,8 @@ sns.set()
 def main(input_path, output_path, sample_name, simple=True, interactive=True, Bokeh_plot=True):
 
     logger.info(f"Analysing: {sample}")
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
 
     ## COLLECTING PEPTIDE ABUNDANCES FOR NORMALISATION ##
     # opening sheet by calling sheet_reader on path
