@@ -44,7 +44,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Module Dev Checklist
 
 #### Standard Utility Modules
-[checkbox:checked] Plotting
+checked # [checkbox:checked] Plotting
 
 [checkbox:checked] Calculations
 
