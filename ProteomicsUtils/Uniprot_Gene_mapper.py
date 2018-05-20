@@ -40,10 +40,19 @@ def gene_mapper(proteins):
     return pass_and_retrieve(url, params)
 
 
-def main(input_path, output_path, col_name):
+def main(input, output_path, col_name):
 
-    logger.info(f"Collecting proteins from {input_path}...")
-    dataframe = pd.read_excel(input_path)
+    #Checking input type: expects df or file path
+    if os.path.isfile(input):
+        logger.info(f"Collecting proteins from {input}...")
+        dataframe = pd.read_excel(input)
+    elif isinstance(input, pd.Dataframe):
+        logger.info(f"Input detected as DataFrame.")
+        dataframe = input
+    else:
+        logger.info(f"Incorrect input format detected. Please pass full file path, or a dataframe as input.")
+        break
+
     proteins = dataframe[col_name].tolist()
     logger.info(f"{len(proteins)} proteins collected from {col_name}")
 
@@ -64,5 +73,5 @@ def main(input_path, output_path, col_name):
 
 if __name__ == "__main__":
     #default to test file if args not parsed
-    input_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/ProteomicsUtils/test_data/test_data_Compiled.xlsx'
-    main(input_path, output_path, col_name)
+    input = 'C:/Users/dezer_000/Documents/App_Dev_Projects/ProteomicsUtils/test_data/test_data_Compiled.xlsx'
+    main(input, output_path, col_name)
