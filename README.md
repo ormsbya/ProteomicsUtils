@@ -1,80 +1,36 @@
-# Project Title
+# ProteomicsUtils
 
-One Paragraph of project description goes here
+A collection of utility functions for processing, analysing and plotting proteomic data
 
-## Getting Started
+Please note: These functions alone do not constitute a complete analysis pipeline, and instead are meant for use in conjunction with additional packages (forthcoming in future releases). In addition, these functions require the preprocessing of raw MS datafiles with an identification and quantification program such as [MaxQuant](http://www.coxdocs.org/doku.php?id=maxquant:start) or [ProteomeDiscoverer](https://www.thermofisher.com/order/catalog/product/OPTON-30795).
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+<!-- ## Getting Started
+
+__These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.__ -->
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This package assumes the standard installation of Python3. For specific package requirements, see the [requirements.txt](requirements.txt) file.
 
-```
-Give examples
-```
-
+<!--
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+??
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+?? -->
 
-### Break down into end to end tests
 
-Explain what these tests test and why
+<!-- ## Contributing
 
-```
-Give an example
-```
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us. -->
 
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Dezerae Cox** - *Initial work* - [dezeraecox](https://github.com/dezeraecox)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
@@ -82,6 +38,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* Templates for this package were adapted from [PurpleBooth](https://github.com/PurpleBooth)
+* Kudos to the [2018 Asia-Pacific Advanced Scientific Programming in Python (#ASPP) Summer School](https://www.melbournebioinformatics.org.au/aspp-asia-pacific/) for giving me the condfidence and tools to tackle my first python package!
