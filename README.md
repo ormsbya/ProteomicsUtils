@@ -40,3 +40,35 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * Templates for this package were adapted from [PurpleBooth](https://github.com/PurpleBooth)
 * Kudos to the [2018 Asia-Pacific Advanced Scientific Programming in Python (#ASPP) Summer School](https://www.melbournebioinformatics.org.au/aspp-asia-pacific/) for giving me the condfidence and tools to tackle my first python package!
+
+## Module Dev Checklist
+
+#### Standard Utility Modules
+[checkbox:checked] Plotting
+
+[checkbox:checked] Calculations
+
+[checkbox:checked] DataWrangling
+
+[checkbox:checked] FileHandling
+
+[checkbox:checked] StatUtils
+
+
+#### Specific MS analysis Modules
+
+[checkbox:checked] Peptide abundance histogram
+
+    PeptideAbundanceHistogram.main(input_path, output_path, sample_name)
+
+[checkbox:checked] Volcano plot of protein abundance changes
+
+    AbundanceVolcanoPlot.main(input_path, output_path, sample_name)
+
+[checkbox:unchecked] Foldedness scatterplot from peptides
+
+[checkbox:unchecked] Heatmap of comparison between stress treatments
+
+[checkbox:unchecked] Cluster analysis according to GO thermofisher
+
+[checkbox:unchecked] Gene mapping functionality for UniProtKB accessions
