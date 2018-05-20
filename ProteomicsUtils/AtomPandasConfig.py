@@ -1,7 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import logging
-from LoggerConfig import logger_config
+from ProteomicsUtils.LoggerConfig import logger_config
 import warnings
 
 logger = logger_config(__name__)

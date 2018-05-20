@@ -6,8 +6,8 @@ from matplotlib.text import Annotation
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 import logging
-from LoggerConfig import logger_config
-import FileHandling
+from ProteomicsUtils.LoggerConfig import logger_config
+import ProteomicsUtils.FileHandling
 
 logger = logger_config(__name__)
 

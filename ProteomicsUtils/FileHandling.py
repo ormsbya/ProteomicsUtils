@@ -4,7 +4,7 @@ import re
 from matplotlib.backends.backend_pdf import PdfPages
 import xlrd
 import logging
-from LoggerConfig import logger_config
+from ProteomicsUtils.LoggerConfig import logger_config
 
 logger = logger_config(__name__)
 logger.info('Import ok')

@@ -3,7 +3,7 @@ import pandas as pd
 from scipy import stats
 import os
 import logging
-from LoggerConfig import logger_config
+from ProteomicsUtils.LoggerConfig import logger_config
 
 logger = logger_config(__name__)
 logger.info('Import ok')
