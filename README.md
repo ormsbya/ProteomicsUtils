@@ -59,9 +59,11 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 - [x] Peptide abundance histogram
 
+
     PeptideAbundanceHistogram.main(input_path, output_path, sample_name)
 
 - [x] Volcano plot of protein abundance changes
+
 
     AbundanceVolcanoPlot.main(input_path, output_path, sample_name)
 
