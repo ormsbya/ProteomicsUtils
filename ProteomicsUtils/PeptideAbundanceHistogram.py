@@ -34,7 +34,7 @@ def main(input_path, output_path, sample_name):
         figures = multifile_hist(input_path, output_path, sample_name)
     else:
         figures = PlotUtils.pep_abund_hist(input_path)
-        FileHandling.fig_to_pdf(figures, output_path, fig_type=samplename+'PepAbundHist')
+        FileHandling.fig_to_pdf(figures, output_path, fig_type=sample_name+'PepAbundHist')
         logger.info(f"Figures saved to {output_path}")
 
     return figures
