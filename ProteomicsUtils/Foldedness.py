@@ -36,10 +36,13 @@ def main(input_path, output_path, sample_name, do_plots=True):
         applied in order
     """
     logger.info(f'Preparing to process: {sample_name}')
-    logger.info(f'Input Path: {input_path}")
+    logger.info(f"Input Path: {input_path}")
 
     total_data = FileHandling.file_reader(input_path)
+
     quant_data, col_list = DataWrangling.quantified_data(total_data)
+    #raj only considers peptides that are observed in all replicates
+    quant_data = quant_data.dropna(axis=0, how='any', thresh=None, subset=col_list)
     two_unique_cys, cys_pep, non_cys_pep = DataWrangling.Unique_Cys_sorter(quant_data)
     #set index of summary dataframes to the protein accession
     cys_pep = cys_pep.set_index(["Master Protein Accessions"], drop=False)
