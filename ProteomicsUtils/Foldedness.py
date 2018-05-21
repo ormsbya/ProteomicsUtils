@@ -93,6 +93,7 @@ def main(input_path, output_path, sample_name, do_plots=True):
     logger.info("Completed calculations with summary data table")
     logger.debug(f"Summary data table post calculations: {summary_data}")
 
+    ## Manually checked data output up to here - appears to match previous script!
     #####for peptides seen more than once in a sample, take average ratio to give only unique ratios for each peptide
     av_summary = CalcUtils.single_pep_av(summary_data)
 
