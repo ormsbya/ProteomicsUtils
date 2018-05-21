@@ -9,13 +9,6 @@ from ProteomicsUtils.LoggerConfig import logger_config
 logger = logger_config(__name__)
 logger.info("Import Successful")
 
-def volcano_plot(summary_data):
-    xdata, xlabel = (summary_data['Log2 Average Ratio'], 'Log2 Average Cys/NonCys Ratio')
-    ydata, ylabel = (summary_data['-Log10 p-Value'], '-Log10 p-Value')
-    title = sample_name
-    colours = summary_data['p-value colour']
-    fig = PlotUtils.simple_scatter(xdata,ydata,title, xlabel, ylabel, colours)
-    return fig
 
 def foldedness_scatter(summary_data):
     xdata, xlabel = (summary_data.loc[(summary_data['p-value'] <0.05), ['Log2 Average NC']], 'Log2 NonCys Abundance')
@@ -118,8 +111,6 @@ def main(input_path, output_path, sample_name, do_plots=True):
 
     return summary_data
 
-
-def main(input_path):
 
 
 if __name__ == "__main__":
