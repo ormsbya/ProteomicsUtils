@@ -64,7 +64,7 @@ def main(input, output_path, col_name):
     gene_info = protein_info(proteins_mapped)
 
     logger.info(f"Gene info gathered: {gene_info}")
-    FileHandling.df_to_excel(output_path=output_path, sheetnames=['Gene ID Mapping', 'Gene Info'], data_frames=[gene_mapped, gene_info])
+    FileHandling.df_to_excel(output_path=output_path+'Gene_Mapping_', sheetnames=['Gene ID Mapping', 'Gene Info'], data_frames=[gene_mapped, gene_info])
     logger.info(f"Gene info saved to {output_path}")
 
     return gene_info
