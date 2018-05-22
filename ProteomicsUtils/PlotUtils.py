@@ -1,3 +1,7 @@
+"""
+Collection of plotting functions, including histograms and scatterplots in both Matplotlib and Bokehself.
+"""
+
 import pandas as pd
 import seaborn as sns
 import os, re
@@ -24,7 +28,6 @@ from ProteomicsUtils.LoggerConfig import logger_config
 from ProteomicsUtils import FileHandling
 
 logger = logger_config(__name__)
-
 logger.info('Import ok')
 
 
@@ -87,9 +90,12 @@ def multirow_scatter(dataframe, key, col_head, x_vals, x_label, y_label):
     return fig_dict
 
 
-def simple_hist(vals, samplename):
-    bins = 100
-    plt.hist(vals.dropna(), bins=bins, range=[0, 5])
+def simple_hist(vals, samplename, bins=100, min=0, max=0):
+    """
+    Generates a simple histogram of the vals list/series provided, over {bins} (default 100) and displays bins from min (default 0) to max (default 5). Returns matplotlib fig object.
+    """
+    fig = plt.figure()
+    plt.hist(vals.dropna(), bins=bins, range=[min, max])
     calc_vals = vals.dropna()
     plt.xlabel('Bins')
     plt.ylabel('Frequency')
@@ -98,8 +104,34 @@ def simple_hist(vals, samplename):
                 color='r', linestyle='dashed', linewidth=1)
     plt.grid(True)
 
+    return fig
+
+
 
 def simple_scatter(x,y,title=None, xlabel=None, ylabel=None, colours=None):
+    """Generates a simple, non-interactive scatter plot with basic customisation.
+
+    Parameters
+    ----------
+    x : list/series
+        x data points as int or floats
+    y : list/series
+        corresponding y data points as int or floats
+    title : str (default None)
+        Title of data being plotted
+    xlabel : str (default None)
+        Label of x-axis
+    ylabel : str (default None)
+        Label of y-axis
+    colours : list (default None)
+        list of colours corresponding to individual datapoints.
+
+    Returns
+    -------
+    fig
+        matplotlib figure object
+
+    """
     fig = plt.scatter(x, y, c = colours, s = 5)
     if xlabel:
         plt.xlabel(xlabel)
@@ -121,13 +153,37 @@ def simple_scatter(x,y,title=None, xlabel=None, ylabel=None, colours=None):
 
 # define the behaviour -> what happens when you pick a dot on the scatterplot by clicking close to it
 
-
-
 def annotate(axis, text, x, y):
+    """ Worker function for interactive scatterplot"""
     text_annotation = Annotation(text, xy=(x, y), xycoords='data')
     axis.add_artist(text_annotation)
 
 def inter_scatter(xdata,ydata, xlabel, ylabel, colours, title, datalabels):
+    """Generates an interactive scatter plot in which clicking on a datapoint labels that point with the datalabel. Also includes definition of "on_pick" function to assist with labelling points.
+
+    Parameters
+    ----------
+    xdata : list/series
+        x data points as int or floats
+    ydata : list/series
+        corresponding y data points as int or floats
+    title : str
+        Title of data being plotted
+    xlabel : str)
+        Label of x-axis
+    ylabel : str
+        Label of y-axis
+    colours : list
+        list of colours corresponding to individual datapoints.
+    datalabels : list
+        list of labels corresponding to individual datapoints.
+
+    Returns
+    -------
+    fig
+        matplotlib figure object
+
+    """
     fig = plt.figure()
     ax = plt.subplot()
     ax.scatter(xdata, ydata, c = colours, picker=True, s = 5 )
@@ -173,6 +229,20 @@ def inter_scatter(xdata,ydata, xlabel, ylabel, colours, title, datalabels):
     return fig
 
 def pep_abund_hist(input_file):
+    """Generates separate histograms for peptide abundance ratios for each replicate within a single file
+
+    Parameters
+    ----------
+    input_file : str
+        full path to input_file containing replicate abundance ratios with the standard ProteomeDiscoverer headers
+
+    Returns
+    -------
+    fig_dict
+        dictionary of matplotlib figure object mapped to replicate names.
+
+    """
+
     #load the peptide sheet, get the sample name
     peptide_data = FileHandling.sheet_reader(input_file, 'Peptides')
 
