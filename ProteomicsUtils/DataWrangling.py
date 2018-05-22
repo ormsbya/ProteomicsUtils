@@ -1,3 +1,6 @@
+"""
+General collection of functions for manipulating dataframes, generally to isolate proteins or peptides that fit the criteria of interest.
+"""
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -9,6 +12,19 @@ logger = logger_config(__name__)
 logger.info('Import ok')
 
 def quantified_data(data_frame):
+    """Collects only the data for which quantification was completed
+    Parameters
+    ----------
+    data_frame : DataFrame
+        Contains raw input from proteomics results preprocessed with ProteomeDiscoverer and exported to excel.
+
+    Returns
+    -------
+    quant_data: DataFrame
+        Contains the filtered dataframe, with Average Abundance ratio column appended.
+    col_list: list
+        list of column headers containing the abundance ratio data
+    """
     #collects only data for which quantifiable info was gathered from PD
     quant_data = data_frame[(data_frame['Quan Info'] == 'Unique')]
     #add a new column which is the average Abundance ratio for multiple replicates
@@ -21,11 +37,25 @@ def quantified_data(data_frame):
         AvAbun.append(av_abun)
     quant_data['Abundance Ratio (Average)'] = AvAbun
     logger.debug('Quant_data: {}'.format(quant_data.shape))
+
     return quant_data, col_list
 
 
 
 def Unique_Cys_sorter(quant_data):
+    """ Collects proteins for which two unique peptides were found, at least one of which contains a cysteine residue.
+
+    Parameters
+    ----------
+    quant_data : DataFrame
+        Contains raw data from preprocessing of proteomics results, generally one includes quantified proteins
+
+    Returns
+    -------
+    two_unique_cys, cys_pep, non_cys_pep : DataFrames
+        seperate dataframes to collect (1) all proteins that fit the criteria, and individually those that contain (2) or do not contain (3) a cysteine residue.
+
+    """
     # create empty dataframes to store filtered data
     two_unique = pd.DataFrame()
     two_unique_cys = pd.DataFrame()
