@@ -1,3 +1,7 @@
+"""
+General collection of functions for calculating .
+"""
+
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -82,6 +86,19 @@ def single_element_av(dataframe, col_name):
 
 
 def non_cys_AR(cys_summ, non_cys_summ):
+    """Calculates the average abundance ratio of non-cysteine containing peptides from a given protein.
+
+    Parameters
+    ----------
+    cys_summ, non_cys_summ : DataFrames
+        DataFrames containing data for the (1) cysteine, and (2) non-cysteine peptides respectively.
+
+    Returns
+    -------
+    DataFrame
+        New dataframe with protein means appended in abundance ratio columns for each replicate.
+
+    """
 
     non_cys_means = pd.DataFrame()
     for x in non_cys_summ['Master Protein Accessions']:
@@ -104,6 +121,7 @@ def non_cys_AR(cys_summ, non_cys_summ):
 
 
 def colour_column_volc(df, xcol, ycol):
+    """Generates red/blue/gray colour column for volcano plot data according to the value in x and y cols for each protein."""
     df['colours'] = 'gray'
     df.loc[(df[xcol] > 1) & (df[ycol] > 1.3), ['colours']] = 'red'
     df.loc[(df[xcol] < -1) & (df[ycol] > 1.3), ['colours']] = 'blue'
@@ -112,6 +130,7 @@ def colour_column_volc(df, xcol, ycol):
 
 
 def mean_med_calc(vals, samplename):
+    """Calculates the mean and median for a seet of values, appended to dictionary mapped to samplename"""
     vals = vals.dropna()
     mean_val = np.mean(vals)
     median_val = np.median(vals)
@@ -131,6 +150,19 @@ def mean_med_calc(vals, samplename):
 
 
 def cys_abun_change(cys_pep, non_cys_pep):
+    """Calculates the average abundance ratio (and log2) of cysteine containing peptides normalised to non-cysteine containing peptides from that protein.
+
+    Parameters
+    ----------
+    cys_pep, non_cys_pep : DataFrames
+        DataFrames containing data for the (1) cysteine, and (2) non-cysteine peptides respectively.
+
+    Returns
+    -------
+    (AbundanceRatios, Log2Ratios, cys_pep) : Tuple
+        New dataframe with cys peptide AR and Cys/Non-cys AR, plus Log2 of ratios, appended in new DataFrames.
+    """
+
     CysAbun_dict = {}
     NonCysAbun_dict = {}
     Change_dict = {}
@@ -239,6 +271,20 @@ def t_test_pair(df, cols_a, cols_b):
 
 
 def t_test_1samp(df, popmean, cols):
+    """Completes one-sample t-test for each row of values, comparing those in cols to the popmean
+    Parameters
+    ----------
+    df : dataframe
+        Contains the complete dataset of interest
+    cols : list
+        list of column names to be included in the values
+    popmean : float
+        value to compare to (i.e. should be 0 or 1 for most ratio queries according to whether data has been logged (0) or not (1) prior to test)
+    Returns
+    -------
+    dataframe
+        Returns entire input dataframe, with appended t-stat and p-value columns
+    """
     for i in range(df.shape[0]):
         vals = df.loc[i, cols]
         vals = vals.dropna()
