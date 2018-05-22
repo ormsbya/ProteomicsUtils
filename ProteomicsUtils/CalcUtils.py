@@ -40,7 +40,7 @@ def cys_div_noncys(cys_pep, non_cys_Av, col_list):
 
     return cys_pep
 
-def single_pep_av(dataframe):
+def single_element_av(dataframe, col_name):
     """
     Creates summary dataframe where each peptide has a single
     ratio value (if seen multiple times in a single sample),
@@ -56,25 +56,27 @@ def single_pep_av(dataframe):
         summary dataframe where each peptide appears only one.
     """
     #collect unique peptides
-    unique_index = dataframe.Sequence.unique()
+    unique_index = dataframe[col_name].unique()
+    logger.info(f"Total unique elements found: {len(unique_index)}")
     #create empty dataframe
     av_summary = pd.DataFrame()
     #get column names containing Ratio
     col_heads = [col for col in dataframe.columns if '_Cys/NonCys' in col]
+    logger.info(f"Columns for calculation: {col_heads}")
 
-    for seq in unique_index:
+    for element in unique_index:
         #collect all instances of a single peptide
-        ratios = dataframe.loc[(dataframe['Sequence'] == seq)]
+        ratios = dataframe.loc[(dataframe[col_name] == element)]
         #check for 1 entry, or multiple entries
         if len(ratios) == 1:
             #if only one ratio was found for a peptide, take that
             av_summary = av_summary.append(ratios, ignore_index = True)
         if len(ratios) > 1:
             #if more than one ratio was found for a peptide, take average
-            for col in col_heads:
-                av_pep = ratios.iloc[0]
-                av_pep[col] = ratios[col].mean()
-            av_summary = av_summary.append(av_pep)
+            for column in col_heads:
+                av = ratios.iloc[0]
+                av[column] = ratios[column].mean()
+            av_summary = av_summary.append(av)
 
     return av_summary
 

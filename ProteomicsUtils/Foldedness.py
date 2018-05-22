@@ -95,11 +95,17 @@ def main(input_path, output_path, sample_name, do_plots=True):
 
     ## Manually checked data output up to here - appears to match previous script!
     #####for peptides seen more than once in a sample, take average ratio to give only unique ratios for each peptide
-    av_summary = CalcUtils.single_pep_av(summary_data)
+    #collect unique peptides
+    single_pep_summary = CalcUtils.single_element_av(summary_data, 'Sequence')
+    single_protein_summary = CalcUtils.single_element_av(summary_data, 'ProteinID')
+    #Need to drop the sequence column here (as makes no sense to keep only one of the peptides found for a protein)
+    single_protein_summary.set_index('ProteinID', inplace=True)
+    single_protein_summary.reset_index(inplace=True, drop=False)
+    single_protein_summary.drop('Sequence', axis=1, inplace=True)
 
     #Saving all dataframes so far to excel results document
-    data_frames = [total_data, quant_data, two_unique_cys, cys_pep, non_cys_pep, summary_table, summary_data, av_summary]
-    sheetnames = ['Total Data', 'Quant Data', 'TwoUniqueCYS', 'CysPep', 'NonCysPep', 'Summary Info', 'Summary Data', 'Single Peptide Average']
+    data_frames = [total_data, quant_data, two_unique_cys, cys_pep, non_cys_pep, summary_table, summary_data, single_pep_summary, single_protein_summary]
+    sheetnames = ['Total Data', 'Quant Data', 'TwoUniqueCYS', 'CysPep', 'NonCysPep', 'Summary Info', 'Summary Data', 'Single Peptide Average', 'Single Protein Average']
     FileHandling.df_to_excel(output_path=output_path+sample_name, sheetnames=sheetnames, data_frames=data_frames)
     logger.info("All dataframes saved to {output_path}")
 
@@ -121,5 +127,5 @@ if __name__ == "__main__":
     #default path to test data
     input_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/ProteomicsUtils/test_data/test_data_Peptides.xlsx'
     output_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/ProteomicsUtils/test_data/'
-    sample_name = 'test_data'
+    sample_name = 'test_data_'
     main(input_path, output_path, sample_name, do_plots=True)
