@@ -1,3 +1,7 @@
+"""
+General collection of functions for handling input and output of data, including reading excel files, iterating over folders, saving dataframes to excel and saving figures to pdf or svg formats.
+"""
+
 import pandas as pd
 import os
 import re
@@ -10,6 +14,14 @@ logger = logger_config(__name__)
 logger.info('Import ok')
 
 def dialog_path_finder():
+    """ Antiquated function for opening a TKinter dialog window to receive user input selecting the input file. Splits file path to collect information on sample being processed.
+
+    Returns
+    -------
+    input_path, output_path, sample_label: tuple
+        tuple of strings containing input and output paths, and sample name.
+
+    """
     #Create a reference to annoying parent window
     root = tkinter.Tk()
     #Close annoying parent window
@@ -24,10 +36,24 @@ def dialog_path_finder():
     resultpath = results[0:-1]
     output_path = '/'.join(resultpath) +'/'+sample_label+ '_'
 #    logger.debug (output)
+
     return (input_path, output_path, sample_label)
 
 
 def file_reader(path):
+    """Antiquated function for opening excel files which are difficult (as are those that come from ProteomeDiscoverer!) and storing resulting data in DataFrame.
+
+    Parameters
+    ----------
+    path : str
+        full path to xlsx file to be opened.
+
+    Returns
+    -------
+    dataframe
+        containing data from first sheet provided by input path.
+
+    """
     filename = path
     data_frame = pd.read_excel(
         filename,
@@ -88,6 +114,21 @@ def folder_iterator(input_folder, do_funcs, fileext = '.xlsx'):
     return output_dict
 
 def PD_compiler(input_folder, fileext='.xlsx'):
+    """Creates compiled xlsx file from seperate Peptides and Proteins files exported from ProteomeDiscoverer.
+
+    Parameters
+    ----------
+    input_folder : str
+        Full path to folder containing xlsx files to be compiled.
+    fileext : str (Default: 'xlsx')
+        file extension of the files to be collected and compiled
+
+    Returns
+    -------
+    output_dict
+        dictionary containing filenames mapped to list of sample_name, result_type, dataframe for each file. Result type is determined from input file name.
+
+    """
     sample_list = []
     output_dict = {}
 
@@ -130,15 +171,33 @@ def PD_compiler(input_folder, fileext='.xlsx'):
         #Using utils function, save each sample to a single excel file with Pep and Prot labelled sheets
         df_to_excel(output_path, sheetnames, dataframes)
         logger.debug('Compiled {} saved to {}'.format(sample, output_path))
-
+    return output_dict
 
 def sheet_reader(path, sheetname):
+    """Reads specific sheet from xlsx file located at path into DataFrame."""
+
     total_data = pd.read_excel(path, sheetname=sheetname)
     return total_data
 
 
 
 def df_to_excel(output_path, sheetnames, data_frames):
+    """Saves list of dataframes to a single excel (xlsx) file.
+
+    Parameters
+    ----------
+    output_path : str
+        Full path to which xlsx file will be saved.
+    sheetnames : list of str
+        descriptive list of dataframe content, used to label sheets in xlsx file.
+    data_frames : list of DataFrames
+        DataFrames to be saved. List order must match order of names provided in sheetname.
+
+    Returns
+    -------
+    None.
+
+    """
     if not output_path.endswith('.xlsx'):
         output_path = output_path+'Results.xlsx'
     writer = pd.ExcelWriter(output_path, engine='xlsxwriter')
@@ -152,6 +211,22 @@ def df_to_excel(output_path, sheetnames, data_frames):
 
 
 def fig_to_pdf(figs, output_path, fig_type=None):
+    """Save matplotlib figure objects to pdf document.
+
+    Parameters
+    ----------
+    figs : dict or list
+        Container with figure objects, either list or dictionary with figure objects as keys.
+    output_path : str
+        Partial path to folder to which figures will be saved. Figures.pdf is appended internally.
+    fig_type : str, optional
+        Appended to output_path prior to 'Figures.pdf' if provided.
+
+    Returns
+    -------
+    None.
+
+    """
     if fig_type:
         output_path = output_path+fig_type+'_'
     if isinstance(figs, dict):
@@ -169,6 +244,22 @@ def fig_to_pdf(figs, output_path, fig_type=None):
 
 
 def fig_to_svg(fig_names, fig_list, output_path):
+    """Save matplotlib figure objects to svg documents.
+
+    Parameters
+    ----------
+    fig_names : list
+        names given to the output svg files in the file path
+    fig_list : list
+        List of matplotlib figure objects, in order corresponding to fig_names.
+    output_path : str
+        Partial path to folder to which figures will be saved. Fig_name and extension (.svg) are appended internally.
+
+    Returns
+    -------
+    None.
+
+    """
     x = 0
     # figs = [plt.figure(n) for n in plt.get_fignums()]
     for fig in fig_list:
