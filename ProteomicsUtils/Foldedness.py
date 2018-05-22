@@ -97,7 +97,7 @@ def main(input_path, output_path, sample_name, do_plots=True):
     #Saving all dataframes so far to excel results document
     data_frames = [total_data, quant_data, two_unique_cys, cys_pep, non_cys_pep, summary_table, summary_data]
     sheetnames = ['Total Data', 'Quant Data', 'TwoUniqueCYS', 'CysPep', 'NonCysPep', 'Summary Info', 'Summary Data']
-    FileHandling.df_to_excel(output_path=output_path+sample_name, sheetnames=sheetnames, data_frames=data_frames)
+    FileHandling.df_to_excel(output_path=output_path+sample_name+'_Foldedness_', sheetnames=sheetnames, data_frames=data_frames)
     logger.info("All dataframes saved to {output_path}")
 
     if do_plots:
