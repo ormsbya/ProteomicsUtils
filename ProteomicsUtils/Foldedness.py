@@ -10,7 +10,7 @@ logger = logger_config(__name__)
 logger.info("Import Successful")
 
 
-def foldedness_scatter(summary_data):
+def foldedness_scatter(summary_data, sample_name):
     xdata, xlabel = (summary_data.loc[(summary_data['p-value'] <0.05), ['Log2 Average NC']], 'Log2 NonCys Abundance')
     ydata, ylabel = (summary_data.loc[(summary_data['p-value'] <0.05), ['Log2 Average Ratio']], 'Log2 Cys/NonCys')
     title = sample_name
@@ -103,7 +103,7 @@ def main(input_path, output_path, sample_name, do_plots=True):
     if do_plots:
         logger.info(f"Preparing foldedness scatterplot for {sample_name}")
         figures = {}
-        figures['Foldedness Scatter'] = foldedness_scatter(summary_data)
+        figures['Foldedness Scatter'] = foldedness_scatter(summary_data, sample_name)
         #### Save figs to pdf
         FileHandling.fig_to_pdf(figures, output_path=output_path, fig_type=sample_name+'_Foldedness')
         logger.info(f"Figures saved to {output_path}")
