@@ -3,7 +3,7 @@ Generates plots of the TPE reactivity (according to Log2 Cys/NonCys) for all pep
 """
 
 import os, sys
-from LoggerConfig import logger_config
+from ProteomicsUtils.LoggerConfig import logger_config
 from ProteomicsUtils import StatUtils, CalcUtils, FileHandling, DataWrangling, PlotUtils
 import matplotlib.pyplot as plt
 
@@ -29,10 +29,9 @@ def main(input_path, output_path, sample_name):
     """
 
     #av_summary = do_funcs(input_path, output_path, sample_name)
-    logger.info('Input Folder: {}'.format(input_folder))
     logger.info('Input Path: {}'.format(input_path))
 
-    logger.info('Testing new do_funcs functionality....')
+    logger.info(f'Preparing to process {sample_name}....')
     total_data = FileHandling.file_reader(input_path)
     quant_data, col_list = DataWrangling.quantified_data(total_data)
     two_unique_cys, cys_pep, non_cys_pep = DataWrangling.Unique_Cys_sorter(quant_data)
@@ -54,17 +53,17 @@ def main(input_path, output_path, sample_name):
     ratio_col = [col for col in summary_table.columns if '_Cys/NonCys' in col]
     select_col = ['Master Protein Accessions', 'Annotated Sequence'] + ratio_col
     summary_data = summary_table[select_col]
-    logger.info(summary_data)
+    logger.debug(summary_data)
     #rename columns to simple names
     summary_data = summary_data.rename(columns = {'Master Protein Accessions':'ProteinID',   'Annotated Sequence':'Sequence'})
     #for peptides seen more than once in a sample, take average ratio to give only unique ratios for each peptide
-    av_summary = CalcUtils.single_pep_av(summary_data, 'Sequence')
+    av_summary = CalcUtils.single_element_av(summary_data, 'Sequence')
 
 
     ##Filtering for proteins which have too many missing values, and generating plots.
-    logger.info('Filtering consensus...')
+    logger.info('Filtering for missing values...')
     #removing rows with >thresh Nans
-    filtered_consensus = DataWrangling.filter_NaNs(av_summary, filter_type='total', threshold=2)
+    filtered_consensus = DataWrangling.filter_NaNs(av_summary, filter_type='total', threshold=0)
     #preparing variables and plotting scatter for each protein
     logger.info('Creating scatter plots...')
     urea_conc = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
@@ -83,7 +82,7 @@ def main(input_path, output_path, sample_name):
     for protein, figure in fig_dict.items():
         plt.show(figure)
 
-    Threshold_1 = filtered_consensus
+    Threshold_0 = filtered_consensus
     dfs = [Threshold_0]
     sheetnames = ['Total_0']
     FileHandling.df_to_excel(output_path=input_folder+'Thresholded_', sheetnames = sheetnames, data_frames=dfs)
@@ -94,7 +93,7 @@ def main(input_path, output_path, sample_name):
 
 if __name__ == "__main__":
     #setting defaults
-    input_path = 'E:/Manuscripts/Pre-draft Manuscripts/HATTERS_Urea Denaturation in lysate/Data Collation/Urea Denat/180501_Analysis/170529_Dezerae_MultiConsensus_Peptides_2UP.xlsx'
-    output_path = 'E:/Manuscripts/Pre-draft Manuscripts/HATTERS_Urea Denaturation in lysate/Data Collation/Urea Denat/180501_Analysis/Results'
+    input_path = 'C:/Users/dezer_000/Desktop/Current Analysis/180501_Urea_Exp8_Analysis/180523_Test_new_module/170529_Dezerae_MultiConsensus_Peptides_2UP.xlsx'
+    output_path = 'C:/Users/dezer_000/Desktop/Current Analysis/180501_Urea_Exp8_Analysis/180523_Test_new_module/'
     sample_name = 'Urea Denaturation (Exp 8)'
     main(input_path, output_path, sample_name)
