@@ -273,7 +273,7 @@ def pep_abund_hist(input_file):
         samplename = rep_names[i]
         #select data from peptide_data using the entry in column list
         data = peptide_data[(AR_cols[i])]
-        simple_hist(data, samplename)
+        simple_hist(data, samplename, min=0, max=5)
         plt.tight_layout()
         #add sample name as title of whole figure, using y at 1.08 to give whitespace between title and plots
         plt.suptitle(samplename, fontsize=16, y=1.08)
