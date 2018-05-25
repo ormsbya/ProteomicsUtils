@@ -1,3 +1,5 @@
+"""
+"""
 
 import os
 import pandas as pd
@@ -13,7 +15,7 @@ from ProteomicsUtils.LoggerConfig import logger_config
 logger = logger_config(__name__)
 logger.info('Import ok')
 
-def per_protein_fitter(df_for_fitting, x_vals, group_col=None, element_col=None, svg=None):
+def per_protein_fitter(df_for_fitting, x_vals, group_col=None, element_col=None):
     calculation_store = {}
     nonconverged = []
     if group_col:
@@ -34,7 +36,7 @@ def per_protein_fitter(df_for_fitting, x_vals, group_col=None, element_col=None,
     fig = StatUtils.sigmoid_plotter(calculation_store)
     return fig
 
-def main(input, output_path, sample_name, x_vals=None, test_element=None, group_col=None, element_col=None):
+def main(input, output_path, sample_name, x_vals=None, test_elements=None, group_col=None, element_col=None, svg=None):
     pass
 
     logger.info(f"Analysing: {sample_name}")
@@ -86,6 +88,7 @@ def main(input, output_path, sample_name, x_vals=None, test_element=None, group_
     return figure_dict
 
 if __name__ == "__main__":
+    #to set function defaults
     input_path = "C:/Users/dezer_000/Desktop/Current Analysis/180501_Urea_Exp8_Analysis/Thresholded_Results.xlsx"
     output_path = 'C:/Users/dezer_000/Desktop/'
     sample_name = 'Test_data'
