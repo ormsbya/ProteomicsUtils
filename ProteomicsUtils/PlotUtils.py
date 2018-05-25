@@ -90,10 +90,14 @@ def multirow_scatter(dataframe, key, col_head, x_vals, x_label, y_label):
     return fig_dict
 
 
-def simple_hist(vals, samplename, bins=100, min=0, max=0):
+def simple_hist(vals, samplename, bins=100, min=None, max=None):
     """
     Generates a simple histogram of the vals list/series provided, over {bins} (default 100) and displays bins from min (default 0) to max (default 5). Returns matplotlib fig object.
     """
+    if not min:
+        min = vals.min()
+    if not max:
+        max = vals.max()
     fig = plt.figure()
     plt.hist(vals.dropna(), bins=bins, range=[min, max])
     calc_vals = vals.dropna()
