@@ -75,8 +75,7 @@ def main(input_path, output_path, sample_name):
                                 y_label='Cys_NonCys')
 
     #to save all figures to pdf
-    output_path=input_folder+'Results/Thresholded_0_filter'
-    FileHandling.fig_to_pdf(fig_dict, output_path)
+    FileHandling.fig_to_pdf(fig_dict, output_path+'Thresholded_')
     logger.info('Save figs to pdf complete')
     #to show all figures as output,
     for protein, figure in fig_dict.items():
@@ -85,7 +84,7 @@ def main(input_path, output_path, sample_name):
     Threshold_0 = filtered_consensus
     dfs = [Threshold_0]
     sheetnames = ['Total_0']
-    FileHandling.df_to_excel(output_path=input_folder+'Thresholded_', sheetnames = sheetnames, data_frames=dfs)
+    FileHandling.df_to_excel(output_path=output_path+'Thresholded_', sheetnames = sheetnames, data_frames=dfs)
 
     return summary_data
 
