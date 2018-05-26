@@ -13,7 +13,8 @@ from bokeh.models import (
 from bokeh.io import export_svgs
 from bokeh.layouts import gridplot
 import pandas as pd
-from LoggerConfig import logger_config
+import os
+from ProteomicsUtils.LoggerConfig import logger_config
 
 logger = logger_config(__name__)
 logger.info("Import successful")
@@ -78,18 +79,25 @@ def bokeh_scatter_maker(df, x_col, y_col, c_col, title, hover_list, to_svg=False
 
     return fig
 
-def main(input_path, output_path, sample_name):
+def main(input, output_path, sample_name):
 
-    df = pd.read_excel(input_path)
-    logger.info(f"Data imported from {input_path}")
+    #Checking input type: expects df or file path
+    if isinstance(input, pd.DataFrame):
+        logger.info(f"Input detected as DataFrame.")
+        df = input
+    elif os.path.isfile(input):
+        logger.info(f"Collecting data from {input}...")
+        df = pd.read_excel(input)
+    else:
+        logger.info(f"Incorrect input format detected. Please pass full file path, or a dataframe as input.")
+
     logger.info(f"Preview data: {df.head(10)}")
 
-
-    output_file(output_path, title="grid_plot")
+    output_file(output_path, title=sample_name+"_scatter")
     logger.info(f"Output html will be saved to {output_path}")
 
     hovers = [('Protein', '@{Master Protein Accessions}'),
-        ('Gene Name', '@{Gene name}'),
+        ('Gene Name', '@{Gene names}'),
         ('Ontology', '@Ontology'),]
 
     fig = bokeh_scatter_maker(df=df, c_col='-Log10 p-Value', y_col='Log2 Average Ratio', x_col='Log2 Average Non-cys', title=sample_name, hover_list=hovers)
