@@ -344,3 +344,35 @@ def bokeh_volcano_maker(df, x_col, y_col, c_col, title, hover_list, to_svg=False
         fig.output_backend = "svg"
 
     return fig
+
+
+
+def y_scaler(fig_nums, y_min=None, y_max=None):
+    """Replots provided figures with the same y-scale
+
+    Parameters
+    ----------
+    fig_nums : list
+        List of integers refering to the figures to be adjusted i.e. works with the current list of figures defined in matplotlib.pyplot
+    y_min : float
+        minimum of adjusted y-scale
+    y_max : type
+        maximum of adjusted y-scale
+
+    Returns
+    -------
+    scaled_figs : list
+        list of figure objects with adjusted y-scale, which can then be saved to pdf/svg or viewed.
+
+    """
+    scaled_figs = []
+    for x in fig_nums:
+        fig = plt.figure(x)
+        if not y_min:
+            plt.ylim(ymax=y_max)
+        if not y_max:
+            plt.ylim(ymin=y_min)
+        else:
+            plt.ylim(ymin=y_min, ymax=y_max)
+        scaled_figs.append(fig)
+    return scaled_figs
