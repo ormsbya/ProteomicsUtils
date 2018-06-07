@@ -10,9 +10,6 @@ from ProteomicsUtils.LoggerConfig import logger_config
 logger = logger_config(__name__)
 logger.info('Import ok')
 
-
-
-
 def t_test_1samp(df, popmean, colstart, colstop):
     for i in range(df.shape[0]):
         vals = df.iloc[i, colstart:(colstop + 1)]
@@ -25,10 +22,12 @@ def t_test_1samp(df, popmean, colstart, colstop):
 from scipy.optimize import curve_fit
 
 def sigmoid(x, x0, k, a, c):
+    """Sigmoid function, to be used for fitting parameters"""
      y = a / (1 + np.exp(-k*(x-x0))) + c
      return y
 
 def sigmoid_calculator(xdata, ydata):
+    """Calculates the best fit to a sigmoid curve for the provided x&y data, using curvefit function."""
     popt, pcov = curve_fit(sigmoid, xdata, ydata)
     #print (popt)
 
@@ -37,6 +36,7 @@ def sigmoid_calculator(xdata, ydata):
     return (x, y, xdata, ydata)
 
 def sigmoid_plotter(sigmoid_dictionary):
+    """Plots to x, y scatter plot, with the fitted curve overlayed."""
     fig = plt.figure()
     for key, value in sigmoid_dictionary.items():
         x, y, x_data, y_data = value
@@ -61,3 +61,32 @@ def per_protein_fitter(protein_df):
     fig = sigmoid_plotter(calculation_store)
     return fig
 #calculation_store
+
+def linear(m, x, b):
+    """linear function, to be used for fitting parameters"""
+    y = m*x + b
+    return y
+
+def fit_calculator(xdata, ydata, reg_function):
+    """Calculates the best fit to a linear regression for the provided x&y data, using curvefit function."""
+    popt, pcov = curve_fit(reg_function, xdata, ydata)
+    #print (popt)
+
+    x = np.linspace(min(xdata), max(xdata), 100)
+    y = reg_function(x, *popt)
+    return (x, y, xdata, ydata)
+
+def fit_plotter(fit_dictionary, x_label, y_label):
+    """Plots to x, y scatter plot, with the fitted curve overlayed."""
+    fig = plt.figure()
+    for key, value in fit_dictionary.items():
+        x, y, x_data, y_data = value
+        plt.scatter(x_data, y_data, label=key)
+        plt.plot(x,y, label=key+'_fit')
+        plt.xlim(min(x_data), max(x_data))
+        if x_label:
+            plt.xlabel(x_label)
+        if y_label:
+            plt.ylabel(y_label)
+    plt.legend(loc='best')
+    return fig
