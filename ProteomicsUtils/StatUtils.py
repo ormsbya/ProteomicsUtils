@@ -23,8 +23,8 @@ from scipy.optimize import curve_fit
 
 def sigmoid(x, x0, k, a, c):
     """Sigmoid function, to be used for fitting parameters"""
-     y = a / (1 + np.exp(-k*(x-x0))) + c
-     return y
+    y = a / (1 + np.exp(-k*(x-x0))) + c
+    return y
 
 def sigmoid_calculator(xdata, ydata):
     """Calculates the best fit to a sigmoid curve for the provided x&y data, using curvefit function."""
