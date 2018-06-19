@@ -67,6 +67,12 @@ def linear(m, x, b):
     y = m*x + b
     return y
 
+def gauss_function(x, a, x0, sigma):
+    return a*np.exp(-(x-x0)**2/(2*sigma**2))
+
+def exponential(x, a, c, d):
+    return a*np.exp(-c*x)+d
+
 def fit_calculator(xdata, ydata, reg_function):
     """Calculates the best fit to a linear regression for the provided x&y data, using curvefit function."""
     popt, pcov = curve_fit(reg_function, xdata, ydata)
@@ -90,3 +96,6 @@ def fit_plotter(fit_dictionary, x_label, y_label):
             plt.ylabel(y_label)
     plt.legend(loc='best')
     return fig
+
+
+## Collect expoential and guassian fitting functions from Exp30 analysis
