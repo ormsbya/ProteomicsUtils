@@ -48,16 +48,21 @@ def sigmoid_plotter(sigmoid_dictionary):
     plt.legend(loc='best')
     return fig
 
-def per_protein_fitter(protein_df):
+def per_protein_fitter(protein_df, x_vals, group_cols):
     calculation_store = {}
     nonconverge_pep = []
-    protein_df = protein_df.drop('ProteinID', axis=1).set_index('Sequence')
+    protein_df = protein_df.drop('ProteinID', axis=1).set_index(group_cols)
     for peptide in protein_df.index.tolist():
         y_data = protein_df.loc[peptide].tolist()
+        if len(group_cols) > 1:
+            key = str(peptide)
+        else:
+            key = peptide
+
         try:
-            calculation_store[peptide] = sigmoid_calculator(urea_conc, y_data)
+            calculation_store[key] = sigmoid_calculator(x_vals, y_data)
         except(RuntimeError):
-            nonconverge_pep.append(peptide)
+            nonconverge_pep.append(key)
     fig = sigmoid_plotter(calculation_store)
     return fig
 #calculation_store
