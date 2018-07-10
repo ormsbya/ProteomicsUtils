@@ -1,4 +1,5 @@
 import urllib
+import requests
 import re, os
 import pandas as pd
 from pandas.compat import StringIO
@@ -12,15 +13,14 @@ logger.info("Import OK")
 
 
 def pass_and_retrieve(url, params):
-    data = urllib.parse.urlencode(params).encode("utf-8")
-    request = urllib.request.Request(url, data)
     contact = "dezerae53@hotmail.com" # Please set your email address here to help us debug in case of problems.
-    request.add_header('User-Agent', 'Python %s' % contact)
-    response = urllib.request.urlopen(request)
-    page = response.read(200000)
+    headers={'User-Agent': 'Python %s' % contact}
+    request = requests.get(url, params=params, headers=headers, stream=True).content
 
-    decoded_data = StringIO(page.decode("utf-8"))
+    rawData = request.content
+    decoded_data = StringIO(rawData.decode("utf-8"))
     df = pd.read_csv(decoded_data, sep="//t|//n|\\t")
+
     return df
 
 
@@ -73,4 +73,21 @@ def main(input, output_path, col_name):
 if __name__ == "__main__":
     #default to test file if args not parsed
     input = 'C:/Users/dezer_000/Documents/App_Dev_Projects/ProteomicsUtils/test_data/test_data_Compiled.xlsx'
+    output_path = 'C:/Users/dezer_000/Downloads/'
+    col_name = 'Accession'
     main(input, output_path, col_name)
+
+
+
+import requests
+import io
+url = 'http://www.uniprot.org/uploadlists/'
+proteins = ['P14873', 'Q8BTM8', 'P11499', 'P19096', 'Q8VDD5']
+proteins = (' ').join(proteins)
+params = {'from':'ACC', 'to':'ID', 'format':'tab', 'query': proteins, 'columns': 'id,entry_name,genes,protein_names,go,comment(FUNCTION)',}
+contact = "dezerae53@hotmail.com" # Please set your email address here to help us debug in case of problems.
+headers={'User-Agent': 'Python %s' % contact}
+request = requests.get(url, params=params, headers=headers, stream=True).content
+rawData = request.content
+decoded_data = StringIO(rawData.decode("utf-8"))
+df = pd.read_csv(decoded_data, sep="//t|//n|\\t")
