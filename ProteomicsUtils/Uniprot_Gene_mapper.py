@@ -54,7 +54,8 @@ def gene_mapper(proteins):
             df_chunk = pass_and_retrieve(url, params)
             dfs.append(df_chunk)
             logger.info(f'df_chunk: {df_chunk.shape}')
-    return pd.concat(dfs, ignore_index=True)
+        df = pd.concat(dfs, ignore_index=True)
+    return df
 
 
 def main(input, output_path, col_name):
