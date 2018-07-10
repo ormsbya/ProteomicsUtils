@@ -1,4 +1,4 @@
-import urllib
+import pprint
 import requests
 import re, os
 import pandas as pd
@@ -11,16 +11,21 @@ from ProteomicsUtils.LoggerConfig import logger_config
 logger = logger_config(__name__)
 logger.info("Import OK")
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 
 def pass_and_retrieve(url, params):
     contact = "dezerae53@hotmail.com" # Please set your email address here to help us debug in case of problems.
     headers={'User-Agent': 'Python %s' % contact}
-    request = requests.get(url, params=params, headers=headers, stream=True).content
+    request = requests.get(url, params=params, headers=headers, stream=True)
 
     rawData = request.content
     decoded_data = StringIO(rawData.decode("utf-8"))
     df = pd.read_csv(decoded_data, sep="//t|//n|\\t")
-
+    #logger.info(f'Retrieved dataframe: {df}')
     return df
 
 
@@ -35,9 +40,21 @@ def protein_info(proteins):
 
 def gene_mapper(proteins):
     url = 'http://www.uniprot.org/uploadlists/'
-    proteins = (' ').join(proteins)
-    params = {'from':'ACC', 'to':'ID', 'format':'tab', 'query': proteins, 'columns': 'id,entry_name,genes,protein_names,go,comment(FUNCTION)',}
-    return pass_and_retrieve(url, params)
+
+    if len(proteins)<1000:
+        proteins = (' ').join(proteins)
+        params = {'from':'ACC', 'to':'ID', 'format':'tab', 'query': proteins, 'columns': 'id,entry_name,genes,protein_names,go,comment(FUNCTION)',}
+        df = pass_and_retrieve(url, params)
+    else:
+        dfs = []
+        for x in list(chunks(proteins, 1000)):
+            protein_chunk = (' ').join(x)
+            logger.info(f'protein_chunk: {len(protein_chunk)}')
+            params = {'from':'ACC', 'to':'ID', 'format':'tab', 'query': protein_chunk, 'columns': 'id,entry_name,genes,protein_names,go,comment(FUNCTION)',}
+            df_chunk = pass_and_retrieve(url, params)
+            dfs.append(df_chunk)
+            logger.info(f'df_chunk: {df_chunk.shape}')
+    return pd.concat(dfs, ignore_index=True)
 
 
 def main(input, output_path, col_name):
@@ -76,18 +93,3 @@ if __name__ == "__main__":
     output_path = 'C:/Users/dezer_000/Downloads/'
     col_name = 'Accession'
     main(input, output_path, col_name)
-
-
-
-import requests
-import io
-url = 'http://www.uniprot.org/uploadlists/'
-proteins = ['P14873', 'Q8BTM8', 'P11499', 'P19096', 'Q8VDD5']
-proteins = (' ').join(proteins)
-params = {'from':'ACC', 'to':'ID', 'format':'tab', 'query': proteins, 'columns': 'id,entry_name,genes,protein_names,go,comment(FUNCTION)',}
-contact = "dezerae53@hotmail.com" # Please set your email address here to help us debug in case of problems.
-headers={'User-Agent': 'Python %s' % contact}
-request = requests.get(url, params=params, headers=headers, stream=True).content
-rawData = request.content
-decoded_data = StringIO(rawData.decode("utf-8"))
-df = pd.read_csv(decoded_data, sep="//t|//n|\\t")
