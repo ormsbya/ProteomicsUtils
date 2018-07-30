@@ -17,7 +17,7 @@ logger.info('Import Successful')
 sns.set()
 
 
-def main(input_path, output_path, sample_name, simple=True, interactive=True, Bokeh_plot=True):
+def main(input_path, output_path, sample_name, sample_type='whole_cell', simple=True, interactive=True, Bokeh_plot=True):
 
     logger.info(f"Analysing: {sample_name}")
     if not os.path.isdir(output_path):
@@ -75,45 +75,63 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
     logger.info(f"Protein abundances normalised to median peptide abundance: {protein_NormAR.head(5)}")
 
 
+    # If IP sample, take the Log2 of each sample for t-tests
+    if sample_type == "IP":
+        protein_Log2 = protein_NormAR.copy()
+        for col in col_list:
+                protein_Log2[col] = np.log2(protein_NormAR[col])
+        logger.info(f"Log2 of Protein abundances calculated: {protein_Log2.head(5)}")
+
+
     # Complete one-sample t-test on each row of NormProtAR using t-test_1samp function
-    popmean = 1
+    if sample_type == 'whole_cell':
+        popmean = 1
+        df = protein_NormAR
+    elif sample_type == 'IP':
+        popmean = 0
+        df = protein_Log2
+
     logger.info(f"Calculating One Sample t-test with population mean {popmean}")
-    protein_NormAR = CalcUtils.t_test_1samp(protein_NormAR, popmean, col_list)
+    df = CalcUtils.t_test_1samp(df, popmean, col_list)
 
     # Calculating the average abundance ratio
     logger.info(f"Calculating mean normalised Abundance Ratio...")
-    protein_NormAR = CalcUtils.row_mean(protein_NormAR, col_list, 'Average')
-
+    df = CalcUtils.row_mean(df, col_list, 'Average')
 
     # Appending other columns of interest for the volcano plot
     # A volcano plot is constructed by plotting the negative log
     # of the p value on the y axis (usually base 10). This results
     # in data points with low p values (highly significant) appearing toward the top of the plot.
-    logger.info(f"Calculating Log2 Average normalised Abundance Ratio, and -Log10(p-value)...")
-    protein_NormAR['Log10 p-val'] = -(np.log10(protein_NormAR['p-value']))
-    protein_NormAR['Log2 Av AR'] = np.log2(protein_NormAR['Average'])
+    df['Log10 p-val'] = -(np.log10(df['p-value']))
+    if sample_type == 'whole_cell':
+        logger.info(f"Calculating Log2 Average normalised Abundance Ratio, and -Log10(p-value)...")
+        df['Log2 Av AR'] = np.log2(df['Average'])
+
+    elif sample_type == 'IP':
+        logger.info(f"Calculating Average Log2 normalised Abundance Ratio, and -Log10(p-value)...")
+        df['Log2 Av AR'] = protein_Log2['Average']
 
     # To produce the colour column, change x and y limits in original function
     logger.info(f"Producing colour column...")
     xcol = 'Log2 Av AR'
     ycol = 'Log10 p-val'
-    protein_NormAR = CalcUtils.colour_column_volc(protein_NormAR, xcol, ycol)
-    logger.info(f"Post calculation results: {protein_NormAR.head(5)}")
+    df = CalcUtils.colour_column_volc(df, xcol, ycol)
+    logger.info(f"Post calculation results: {df.head(5)}")
 
     # Collecting dataframes and descriptors to save using the df_to_excel function
-    data_frames = [calcs, protein_AR_summary, protein_NormAR]
-    sheetnames = ['Med+Mean Calcs', 'Protein AR', 'ProtAR Norm to Med']
+    data_frames = [calcs, protein_AR_summary, protein_NormAR, df]
+    sheetnames = ['Med+Mean Calcs', 'Protein AR', 'ProtAR Norm to Med', 'Significance_test']
     output = output_path+sample_name+'ProteinAbundance_Results.xlsx'
     FileHandling.df_to_excel(output, sheetnames, data_frames)
     logger.info(f"Dataframes saved to excel file at {output}...")
 
     logger.info(f"Preparing data for volcano plot")
     # Gathering data for the scatter (volcano) plot
-    xdata, xlabel = (protein_NormAR['Log2 Av AR'], 'Log2 Av. Abundance Ratio')
-    ydata, ylabel = (protein_NormAR['Log10 p-val'], '-Log10 p-value')
+    xdata, xlabel = (df['Log2 Av AR'], 'Log2 Av. Abundance Ratio')
+    ydata, ylabel = (df['Log10 p-val'], '-Log10 p-value')
     title = sample_name
-    datalabels = protein_NormAR['Accession']
-    colours = protein_NormAR['colours']
+    datalabels = df['Accession']
+    colours = df['colours']
 
 
     if simple:
@@ -146,7 +164,7 @@ def main(input_path, output_path, sample_name, simple=True, interactive=True, Bo
         hovers = [('Protein', '@Accession'),
             ('Gene', '@Description'),]
 
-        fig3 = PlotUtils.bokeh_volcano_maker(df=protein_NormAR, c_col='Log10 p-val', y_col='Log10 p-val', x_col='Log2 Av AR', title=sample_name+' Volcano Plot', hover_list=hovers)
+        fig3 = PlotUtils.bokeh_volcano_maker(df=df, c_col='Log10 p-val', y_col='Log10 p-val', x_col='Log2 Av AR', title=sample_name+' Volcano Plot', hover_list=hovers)
         show(fig3)
 
     # Saving figures to pdf and as svg files
@@ -158,5 +176,6 @@ if __name__ == "__main__":
     #default parameters if no command line arguements given
     input_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/MS_Urea_Analysis_Project/TPEdenat/test_data/DC113-DC120_Compiled.xlsx'
     output_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/MS_Urea_Analysis_Project/TPEdenat/test_data/'
-    sample_name = 'MG132'
-    main(input_path, output_path, sample_name)
+    sample_name = 'IP_'
+    sample_type = 'IP'
+    main(input_path, output_path, sample_name, sample_type)
