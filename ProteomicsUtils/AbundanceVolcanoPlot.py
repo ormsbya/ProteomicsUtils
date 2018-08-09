@@ -17,7 +17,7 @@ logger.info('Import Successful')
 sns.set()
 
 
-def main(input_path, output_path, sample_name, sample_type='whole_cell', simple=True, interactive=True, Bokeh_plot=True):
+def main(input_path, output_path, sample_name, sample_type='whole_cell', replicate_threshold=0, simple=True, interactive=True, Bokeh_plot=True):
 
     logger.info(f"Analysing: {sample_name}")
     if not os.path.isdir(output_path):
@@ -64,7 +64,7 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', simple=
     logger.info(f"Columns for summary: {summary_cols}")
     protein_AR_summary = proteins_raw[summary_cols]
     # remove any proteins not seen in all replicates
-    protein_AR_summary = DataWrangling.filter_NaNs(protein_AR_summary, filter_type='total', threshold=0)
+    protein_AR_summary = DataWrangling.filter_NaNs(protein_AR_summary, filter_type='total', threshold=replicate_threshold)
     protein_AR_summary.reset_index(inplace=True, drop=True)
     logger.info(f"Protein AR: {protein_AR_summary.head(5)}")
 
@@ -77,10 +77,14 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', simple=
 
     # If IP sample, take the Log2 of each sample for t-tests
     if sample_type == "IP":
+        logger.info(f'{sample_type} sample detected.')
         protein_Log2 = protein_NormAR.copy()
         for col in col_list:
                 protein_Log2[col] = np.log2(protein_NormAR[col])
-        logger.info(f"Log2 of Protein abundances calculated: {protein_Log2.head(5)}")
+        logger.info(f"Log2 of Protein normalisaed abundances calculated: {protein_Log2.head(5)}")
+    else:
+        logger.info(f'{sample_type} sample detected. Using normalised abundances for one sample t-test')
+
 
 
     # Complete one-sample t-test on each row of NormProtAR using t-test_1samp function
@@ -176,6 +180,7 @@ if __name__ == "__main__":
     #default parameters if no command line arguements given
     input_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/MS_Urea_Analysis_Project/TPEdenat/test_data/DC113-DC120_Compiled.xlsx'
     output_path = 'C:/Users/dezer_000/Documents/App_Dev_Projects/MS_Urea_Analysis_Project/TPEdenat/test_data/'
-    sample_name = 'IP_'
-    sample_type = 'IP'
-    main(input_path, output_path, sample_name, sample_type)
+    sample_name = 'MG132'
+    sample_type = 'whole_cell'
+    replicate_threshold = 3
+    main(input_path, output_path, sample_name, sample_type, replicate_threshold)
