@@ -67,7 +67,7 @@ def per_protein_fitter(protein_df, x_vals, group_cols):
     return fig
 #calculation_store
 
-def linear(m, x, b):
+def linear(x, m, b):
     """linear function, to be used for fitting parameters"""
     y = m*x + b
     return y
@@ -85,7 +85,7 @@ def fit_calculator(xdata, ydata, reg_function):
 
     x = np.linspace(min(xdata), max(xdata), 100)
     y = reg_function(x, *popt)
-    return (x, y, xdata, ydata)
+    return (x, y, xdata, ydata, popt, pcov)
 
 def fit_plotter(fit_dictionary, x_label, y_label):
     """Plots to x, y scatter plot, with the fitted curve overlayed."""
