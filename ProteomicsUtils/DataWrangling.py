@@ -42,6 +42,7 @@ def quantified_data(data_frame):
 
 
 
+
 def Unique_Cys_sorter(quant_data):
     """ Collects proteins for which two unique peptides were found, at least one of which contains a cysteine residue.
 
@@ -62,11 +63,11 @@ def Unique_Cys_sorter(quant_data):
     cys_pep = pd.DataFrame()
     non_cys_pep = pd.DataFrame()
 
-    for x in quant_data['Master Protein Accessions']:
-        protein = quant_data.loc[(quant_data['Master Protein Accessions'] == x)]
+    for x in quant_data['ProteinID']:
+        protein = quant_data.loc[(quant_data['ProteinID'] == x)]
         if len(protein)>1:
-            cys = protein.loc[(protein['Annotated Sequence'].str.contains('C') == True)]
-            non_cys = protein.loc[(protein['Annotated Sequence'].str.contains('C') == False)]
+            cys = protein.loc[(protein['Sequence'].str.contains('C') == True)]
+            non_cys = protein.loc[(protein['Sequence'].str.contains('C') == False)]
             two_unique = two_unique.append(protein, ignore_index = True)
 
             if len(cys)>=1 and len(non_cys)>=1:
@@ -74,7 +75,7 @@ def Unique_Cys_sorter(quant_data):
                 cys_pep = cys_pep.append(cys, ignore_index = True)
                 non_cys_pep = non_cys_pep.append(non_cys, ignore_index = True)
             # this removes any duplicate protein accessions to avoid reprocessing##
-            quant_data = quant_data[(quant_data['Master Protein Accessions'] != x)]
+            quant_data = quant_data[(quant_data['ProteinID'] != x)]
     logger.debug('CysPep: {}'.format(cys_pep.shape))
     logger.debug('NonCysPep: {}'.format(non_cys_pep.shape))
     return two_unique_cys, cys_pep, non_cys_pep

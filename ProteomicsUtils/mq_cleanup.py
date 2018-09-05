@@ -31,7 +31,6 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
         sample_cols = [col for col in peptides.columns.tolist() if 'Ratio H/L '+sample in col]
         cleaned_dfs[sample] = peptides[standard_cols + sample_cols]
     logger.info(f'Successfully cleaned peptide dataframe.')
-    FileHandling.df_to_excel(output_path+'Peptide_', sheetnames = list(cleaned_dfs.keys()), data_frames = [df.reset_index() for df in list(cleaned_dfs.values())])
 
     logger.info(f'Collecting proteins')
     proteins = pd.read_table(input_folder+proteins_file, sep='\t')
@@ -54,7 +53,6 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
         master_proteins = sample_vals[sample_vals['Number of proteins'] == 1]
         cleaned_prot_dfs[sample] = master_proteins[sample_reps > 0]
 
-    FileHandling.df_to_excel(output_path+'Cleaned_Master_Proteins.xlsx', sheetnames = list(cleaned_prot_dfs.keys()), data_frames = [df.reset_index() for df in list(cleaned_prot_dfs.values())])
     logger.info(f'Successfully cleaned proteins dataframe.')
 
     logger.info(f'Sorting cleaned data per sample...')
@@ -63,7 +61,7 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
         #collect peptide dataframe, rename relevant columns
         pep_dataframe = cleaned_dfs[sample]
         MQ_cols = ['Protein IDs', 'Proteins', 'Protein names'] + [col for col in proteins.columns.tolist() if 'Ratio H/L '+sample in col]
-        new_cols = ['Accession', 'Accession', 'Description'] + [f'Abundance Ratio: ({sample}_{x})' for x in range(1, len(MQ_cols)+1)]
+        new_cols = ['ProteinID', 'ProteinID', 'Description'] + [f'Abundance Ratio: ({sample}_{x})' for x in range(1, len(MQ_cols)+1)]
         pep_dataframe.rename(columns=dict(zip(MQ_cols, new_cols)), inplace=True)
 
         # collect protein dataframe, rename relevant columns
@@ -71,6 +69,8 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
         prot_dataframe.rename(columns=dict(zip(MQ_cols, new_cols)), inplace=True)
 
         #save to individual excel spreadsheets
+        FileHandling.df_to_excel(output_path+sample+'_MQ_Proteins.xlsx', sheetnames=['Proteins'], data_frames = [prot_dataframe])
+        FileHandling.df_to_excel(output_path+sample+'_MQ_Peptides.xlsx', sheetnames=['Peptides'], data_frames = [pep_dataframe])
         FileHandling.df_to_excel(output_path+sample+'_Compiled.xlsx', sheetnames=['Proteins', 'Peptides'], data_frames = [prot_dataframe, pep_dataframe])
         #logger.debug(pep_dataframe.columns.tolist())
 
