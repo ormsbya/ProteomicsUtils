@@ -23,7 +23,7 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
     if sample_names is None:
         logger.info(f'Sample names not set. Collecting all samples.')
         sample_names = [x.replace('Identification type ', '').split('_')[:-1] for x in peptides.columns.tolist() if 'Identification type ' in x]
-        sample_names = [('_').join(x) for x in sample_names]
+        sample_names = list(set([('_').join(x) for x in sample_names]))
         logger.info(f'Samples detected: {sample_names}')
 
 
@@ -45,12 +45,15 @@ def multifile_cleaner(input_folder, output_path, sample_names=None, proteins_fil
 
     for sample in sample_names:
         sample_cols = [col for col in proteins.columns.tolist() if sample in col]
+        logger.debug(f'Sample cols: {sample_cols}')
         #collect columns of interest
         sample_vals = proteins[standard_cols + sample_cols]
         #collect only proteins with at least one peptide identified in that sample
         sample_reps = sample_vals[[col for col in proteins.columns.tolist() if 'Peptides '+sample in col]].sum(axis=1)
+        logger.debug(f'Sample reps: {sample_reps.head(10)}')
         # collect only proteins which are master proteins
         master_proteins = sample_vals[sample_vals['Number of proteins'] == 1]
+        logger.debug(f'Master proteins: {master_proteins.head(10)}')
         cleaned_prot_dfs[sample] = master_proteins[sample_reps > 0]
 
     logger.info(f'Successfully cleaned proteins dataframe.')
