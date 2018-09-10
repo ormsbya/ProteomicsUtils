@@ -18,7 +18,7 @@ def foldedness_scatter(summary_data, sample_name):
     fig = PlotUtils.simple_scatter(xdata,ydata,title, xlabel, ylabel, colours)
     return fig
 
-def main(input_path, output_path, sample_name, do_plots=True):
+def main(input_path, output_path, sample_name, do_plots=True, input_type=None, missing_threshold=0):
     """
     Master function to apply a list of functions to the input file
 
@@ -39,14 +39,26 @@ def main(input_path, output_path, sample_name, do_plots=True):
     logger.info(f"Input Path: {input_path}")
 
     total_data = FileHandling.file_reader(input_path)
+    if input_type == 'PD':
+        quant_data, col_list = DataWrangling.quantified_data(total_data)
+        logger.info('PD data source detected. Quant info successfully gathered.')
+        logger.debug(f'{quant_data.head(5)}')
 
-    quant_data, col_list = DataWrangling.quantified_data(total_data)
+    elif input_type == 'MQ':
+        quant_data = total_data.copy()
+        col_list = [col for col in quant_data.columns if 'Abundance Ratio: (' in col]
+        logger.info('MQ data source detected. Quant info successfully gathered.')
+        logger.debug(f'{quant_data.head(5)}')
+    else:
+        logger.info('Invalid data source detected. Please use MQ or PD')
+
     #raj only considers peptides that are observed in all replicates
-    quant_data = quant_data.dropna(axis=0, how='any', thresh=None, subset=col_list)
+    quant_data = quant_data.dropna(axis=0, how='any', thresh=missing_threshold, subset=col_list)
+
     two_unique_cys, cys_pep, non_cys_pep = DataWrangling.Unique_Cys_sorter(quant_data)
     #set index of summary dataframes to the protein accession
-    cys_pep = cys_pep.set_index(["Master Protein Accessions"], drop=False)
-    non_cys_pep = non_cys_pep.set_index(["Master Protein Accessions"], drop=False)
+    cys_pep = cys_pep.set_index(["ProteinID"], drop=False)
+    non_cys_pep = non_cys_pep.set_index(["ProteinID"], drop=False)
 
     non_cys_Av = CalcUtils.non_cys_AR(cys_pep, non_cys_pep)
 
@@ -63,15 +75,12 @@ def main(input_path, output_path, sample_name, do_plots=True):
     logger.info(f"Collecting Cys columns: {C_col}")
 
     #collect only columns of interest for summary table
-    select_col = ['Master Protein Accessions', 'Annotated Sequence'] + abundance_cols
+    select_col = ['ProteinID', 'Sequence'] + abundance_cols
     summary_data = summary_table[select_col]
     summary_data.dropna(axis=0, how='any', thresh=None, subset=abundance_cols, inplace=True)
     summary_data = summary_data.reset_index(drop=True)
     logger.debug(F"Summary data acquired: {summary_data}")
 
-
-    #rename columns to simple names
-    summary_data = summary_data.rename(columns = {'Master Protein Accessions':'ProteinID',   'Annotated Sequence':'Sequence'})
 
     #####Paired T-test
     logger.info("Calculating t-test statistics")

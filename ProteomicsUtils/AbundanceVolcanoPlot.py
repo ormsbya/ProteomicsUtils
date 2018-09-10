@@ -60,7 +60,7 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', replica
     logger.info(f"Proteins imported from {input_path}")
 
     # creating summary data_frame of original protein data
-    summary_cols = ['Accession','Description'] + col_list
+    summary_cols = ['ProteinID','Description'] + col_list
     logger.info(f"Columns for summary: {summary_cols}")
     protein_AR_summary = proteins_raw[summary_cols]
     # remove any proteins not seen in all replicates
@@ -134,7 +134,7 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', replica
     xdata, xlabel = (df['Log2 Av AR'], 'Log2 Av. Abundance Ratio')
     ydata, ylabel = (df['Log10 p-val'], '-Log10 p-value')
     title = sample_name
-    datalabels = df['Accession']
+    datalabels = df['ProteinID']
     colours = df['colours']
 
 
@@ -165,7 +165,7 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', replica
         output_file(output, title=sample_name)
         logger.info(f"Output html will be saved to {output_path}")
 
-        hovers = [('Protein', '@Accession'),
+        hovers = [('Protein', '@ProteinID'),
             ('Gene', '@Description'),]
 
         fig3 = PlotUtils.bokeh_volcano_maker(df=df, c_col='Log10 p-val', y_col='Log10 p-val', x_col='Log2 Av AR', title=sample_name+' Volcano Plot', hover_list=hovers)

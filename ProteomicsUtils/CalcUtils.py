@@ -101,8 +101,8 @@ def non_cys_AR(cys_summ, non_cys_summ):
     """
 
     non_cys_means = pd.DataFrame()
-    for x in non_cys_summ['Master Protein Accessions']:
-        protein = non_cys_summ.loc[(non_cys_summ['Master Protein Accessions'] == x)]
+    for x in non_cys_summ['ProteinID']:
+        protein = non_cys_summ.loc[(non_cys_summ['ProteinID'] == x)]
         col_heads = [col for col in protein.columns if 'Abundance Ratio: (' in col]
 
         for l in range (0, len(col_heads)):
@@ -115,7 +115,7 @@ def non_cys_AR(cys_summ, non_cys_summ):
                 non_cys_means.loc[x,column] = non_cys_mean
             #NonCysAbun_dict[x] = rep_means
         #this removes any duplicate protein accessions to avoid reprocessing##
-        non_cys_summ = non_cys_summ[(non_cys_summ['Master Protein Accessions'] != x)]
+        non_cys_summ = non_cys_summ[(non_cys_summ['ProteinID'] != x)]
     #logging.debug (non_cys_means)
     return non_cys_means
 
@@ -171,8 +171,8 @@ def cys_abun_change(cys_pep, non_cys_pep):
     cys_pep_per_protein = cys_pep
     cys_pep_per_peptide = cys_pep
 
-    for x in cys_pep_per_protein['Master Protein Accessions']:
-        protein = cys_pep_per_protein.loc[(cys_pep_per_protein['Master Protein Accessions'] == x)]
+    for x in cys_pep_per_protein['ProteinID']:
+        protein = cys_pep_per_protein.loc[(cys_pep_per_protein['ProteinID'] == x)]
         if protein.empty != True:
             #to process a multi-consensus file (in which the av. abundance has been calc)
             col_head = [col for col in protein.columns if 'Abundance Ratio (Average)' in col]
@@ -180,19 +180,19 @@ def cys_abun_change(cys_pep, non_cys_pep):
             cys_mean = protein[col_head].mean()
             CysAbun_dict[x] = cys_mean
         #this removes any duplicate protein accessions to avoid reprocessing##
-        cys_pep_per_protein = cys_pep_per_protein[(cys_pep_per_protein['Master Protein Accessions'] != x)]
+        cys_pep_per_protein = cys_pep_per_protein[(cys_pep_per_protein['ProteinID'] != x)]
 
-    for x in non_cys_pep['Master Protein Accessions']:
-        protein = non_cys_pep.loc[(non_cys_pep['Master Protein Accessions'] == x)]
+    for x in non_cys_pep['ProteinID']:
+        protein = non_cys_pep.loc[(non_cys_pep['ProteinID'] == x)]
         if protein.empty != True:
             non_cys_mean = protein[col_head].mean()
             NonCysAbun_dict[x] = non_cys_mean
         #this removes any duplicate protein accessions to avoid reprocessing##
-        non_cys_pep = non_cys_pep[(non_cys_pep['Master Protein Accessions'] != x)]
+        non_cys_pep = non_cys_pep[(non_cys_pep['ProteinID'] != x)]
     print ('Column used for calculations: ', col_head)
 
     for index, row in cys_pep_per_peptide.iterrows():
-        proteinID = row['Master Protein Accessions']
+        proteinID = row['ProteinID']
         non_cys_av = NonCysAbun_dict[proteinID]
         change_ratio = row[col_head]/non_cys_av
         non_cys_list.append(non_cys_av)

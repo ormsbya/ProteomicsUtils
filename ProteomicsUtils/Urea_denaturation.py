@@ -36,8 +36,8 @@ def main(input_path, output_path, sample_name):
     quant_data, col_list = DataWrangling.quantified_data(total_data)
     two_unique_cys, cys_pep, non_cys_pep = DataWrangling.Unique_Cys_sorter(quant_data)
     #set index of summary dataframes to the protein accession
-    cys_pep = cys_pep.set_index(["Master Protein Accessions"], drop=False)
-    non_cys_pep = non_cys_pep.set_index(["Master Protein Accessions"], drop=False)
+    cys_pep = cys_pep.set_index(["ProteinID"], drop=False)
+    non_cys_pep = non_cys_pep.set_index(["ProteinID"], drop=False)
 
     non_cys_Av = CalcUtils.non_cys_AR(cys_pep, non_cys_pep)
 
@@ -51,11 +51,11 @@ def main(input_path, output_path, sample_name):
     #collect only columns of interest
     summary_table.reset_index(drop=True, inplace=True)
     ratio_col = [col for col in summary_table.columns if '_Cys/NonCys' in col]
-    select_col = ['Master Protein Accessions', 'Annotated Sequence'] + ratio_col
+    select_col = ['ProteinID', 'Annotated Sequence'] + ratio_col
     summary_data = summary_table[select_col]
     logger.debug(summary_data)
     #rename columns to simple names
-    summary_data = summary_data.rename(columns = {'Master Protein Accessions':'ProteinID',   'Annotated Sequence':'Sequence'})
+    summary_data = summary_data.rename(columns = {'ProteinID':'ProteinID',   'Annotated Sequence':'Sequence'})
     #for peptides seen more than once in a sample, take average ratio to give only unique ratios for each peptide
     av_summary = CalcUtils.single_element_av(summary_data, 'Sequence')
 
