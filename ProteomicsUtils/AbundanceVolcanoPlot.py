@@ -64,8 +64,8 @@ def main(input_path, output_path, sample_name, sample_type='whole_cell', replica
     logger.info(f"Columns for summary: {summary_cols}")
     protein_AR_summary = proteins_raw[summary_cols]
     # remove any proteins not seen in all replicates
-    protein_AR_summary = DataWrangling.filter_NaNs(protein_AR_summary, filter_type='total', threshold=replicate_threshold)
-    protein_AR_summary.reset_index(inplace=True, drop=True)
+    protein_AR_summary = DataWrangling.filter_NaNs(protein_AR_summary.set_index(['ProteinID','Description']), filter_type='total', threshold=replicate_threshold)
+    protein_AR_summary.reset_index(inplace=True)
     logger.info(f"Protein AR: {protein_AR_summary.head(5)}")
 
     # Normalising each dataset to the Median Peptide Abundance
